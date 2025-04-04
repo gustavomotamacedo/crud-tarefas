@@ -11,6 +11,8 @@ import java.util.Optional;
 @Service
 public class UsuarioService {
 
+    private Long usuarioId;
+
     private final UsuarioRepository usuarioRepository;
 
     public UsuarioService(UsuarioRepository usuarioRepository) {
@@ -44,5 +46,21 @@ public class UsuarioService {
         }
 
         return usuario.get().getId();
+    }
+
+    public Usuario getUsuarioById(Long id) {
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+        if (usuario.isEmpty()) {
+            throw new UsuarioNaoEncontradoExeption("Usuário não encontrado.");
+        }
+        return usuario.get();
+    }
+
+    public Long getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(Long usuarioId) {
+        this.usuarioId = usuarioId;
     }
 }

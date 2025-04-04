@@ -1,12 +1,12 @@
 package org.gusmacedo.todo_list.controller;
 
 import org.gusmacedo.todo_list.controller.dto.UsuarioDTO;
+import org.gusmacedo.todo_list.entity.Usuario;
+import org.gusmacedo.todo_list.exeptions.SenhaIncorretaExeption;
+import org.gusmacedo.todo_list.exeptions.UsuarioNaoEncontradoExeption;
 import org.gusmacedo.todo_list.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("usuarios")
@@ -18,15 +18,27 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
+    @PostMapping("login")
+    public ResponseEntity<Usuario> loginUsuario(@RequestParam("email") String email, @RequestParam("senha") String senha) {
+        try {
+            usuarioService.loginUsuario(email, senha);
+            return ResponseEntity.ok().build();
+        } catch (UsuarioNaoEncontradoExeption e) {
+           return ResponseEntity.notFound().build();
+        } catch (SenhaIncorretaExeption e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
     @PostMapping
-    public ResponseEntity<?> cadastrarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
         try {
             usuarioService.cadastrarUsuario(usuarioDTO.nome(),
                     usuarioDTO.email(),
                     usuarioDTO.senha());
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 }

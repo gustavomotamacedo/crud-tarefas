@@ -1,6 +1,8 @@
 package org.gusmacedo.todo_list.service;
 
 import org.gusmacedo.todo_list.entity.Usuario;
+import org.gusmacedo.todo_list.exeptions.SenhaIncorretaExeption;
+import org.gusmacedo.todo_list.exeptions.UsuarioNaoEncontradoExeption;
 import org.gusmacedo.todo_list.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,16 @@ public class UsuarioService {
 
     public UsuarioService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
+    }
+
+    public void loginUsuario(String email, String senha) {
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+        if (usuario.isEmpty()) {
+            throw new UsuarioNaoEncontradoExeption("Usuário não encontrado.");
+        }
+        if (!usuario.get().getSenha().equals(senha)) {
+            throw new SenhaIncorretaExeption("Senha incorreta.");
+        }
     }
 
     public void cadastrarUsuario(String nome, String email, String senha) {

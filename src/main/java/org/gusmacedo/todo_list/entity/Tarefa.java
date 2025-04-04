@@ -52,4 +52,8 @@ public class Tarefa {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+
+    public Long getId() {
+        return id;
+    }
 }

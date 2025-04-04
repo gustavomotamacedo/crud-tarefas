@@ -27,13 +27,33 @@ public class TarefaController {
         this.usuarioService = usuarioService;
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Tarefa> atualizarTarefa(@PathVariable Long id, @RequestBody TarefaDTO tarefaDTO) {
+        try {
+            tarefaService.atualizarTarefa(id, usuarioService.getUsuarioId(), tarefaDTO);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().header("Error", e.getMessage()).build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarTarefa(@PathVariable Long id) {
+        try {
+            tarefaService.deletarTarefa(id, usuarioService.getUsuarioId());
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().header("Error", e.getMessage()).build();
+        }
+    }
+
     @PostMapping
     public ResponseEntity<Tarefa> cadastrarTarefa(@RequestBody TarefaDTO tarefaDTO) {
         tarefaService.cadastrarTarefa(tarefaDTO.toTarefa(usuarioService.getUsuarioById(usuarioService.getUsuarioId())));
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping()
+    @GetMapping
     public List<TarefaDTO> consultarTarefas() {
         try {
             return tarefaService.consultarTarefas(usuarioService.getUsuarioId());

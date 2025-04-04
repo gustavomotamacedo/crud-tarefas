@@ -9,4 +9,8 @@ import java.util.Optional;
 public interface TarefaRepository extends JpaRepository<Tarefa, Long> {
 
     List<Optional<Tarefa>> findByUsuarioId(Long usuarioId);
+
+    boolean existsByIdAndUsuarioId(Long id, Long usuarioId);
+
+    Optional<Tarefa> findByIdAndUsuarioId(Long id, Long usuarioId);
 }

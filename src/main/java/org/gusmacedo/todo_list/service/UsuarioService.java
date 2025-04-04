@@ -27,14 +27,22 @@ public class UsuarioService {
         }
     }
 
-    public void cadastrarUsuario(String nome, String email, String senha) {
-        Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(email);
+    public void cadastrarUsuario(Usuario usuario) {
+        Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
 
         if (usuarioExistente.isPresent()) {
             throw new IllegalArgumentException("Já existe um usuário com este email.");
         }
 
-        usuarioRepository.save(new Usuario(nome, email, senha));
+        usuarioRepository.save(usuario);
     }
 
+    public Long getUsuarioIdByEmail(String email) {
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+        if (usuario.isEmpty()) {
+            throw new UsuarioNaoEncontradoExeption("Usuário não encontrado.");
+        }
+
+        return usuario.get().getId();
+    }
 }

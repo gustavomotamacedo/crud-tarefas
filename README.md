@@ -146,6 +146,10 @@ API RESTful desenvolvida em Java com o framework Spring Boot, para gerenciamento
         }
     }
     ```
+    
+---
+
+> A api também possui documentação Swagger disponível em `/swagger-ui/index.html`.
 
 ---
 

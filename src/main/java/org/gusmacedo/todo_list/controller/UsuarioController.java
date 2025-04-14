@@ -51,22 +51,19 @@ public class UsuarioController {
     @Operation(
             summary = "Cadastra um novo usuário",
             description = "Registra um novo usuário no sistema com base nos dados fornecidos.",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDTO.class))
-            ),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Usuário cadastrado com sucesso"),
                     @ApiResponse(responseCode = "400", description = "Erro ao cadastrar o usuário", content = @Content(schema = @Schema(hidden = true)))
             }
     )
     @PostMapping
-    public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<Usuario> cadastrarUsuario(@RequestParam("nome") String nome, @RequestParam("email") String email, @RequestParam("senha") String senha) {
         try {
+            UsuarioDTO usuarioDTO = new UsuarioDTO(nome, email, senha);
             usuarioService.cadastrarUsuario(usuarioDTO.toUsuario());
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().header("ERRO", e.getMessage()).build();
         }
     }
 }
